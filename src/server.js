@@ -10,6 +10,7 @@
 import 'babel-polyfill';
 import path from 'path';
 import express from 'express';
+import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import expressJwt from 'express-jwt';
@@ -19,6 +20,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/server';
 import UniversalRouter from 'universal-router';
 import PrettyError from 'pretty-error';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import App from './components/App';
 import Html from './components/Html';
@@ -74,7 +76,19 @@ app.get('/login/facebook/return',
 //
 // Register API middleware
 // -----------------------------------------------------------------------------
-app.use('/graphql', expressGraphQL(req => ({
+
+const corsOptions = {
+  origin: ['http://localhost:3001'],
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+  preflightContinue: true,
+  credentials: true
+}
+
+app.options('/graphql', cors(corsOptions), function(req, res, next) {
+  res.send('OK')
+});
+
+app.use('/graphql', cors(corsOptions), expressGraphQL(req => ({
   schema,
   graphiql: true,
   rootValue: { request: req },
@@ -109,11 +123,12 @@ app.get('*', async (req, res, next) => {
       return;
     }
 
+    const muiTheme = getMuiTheme({ userAgent: req.headers['user-agent'] });
     const data = { ...route };
     data.children = ReactDOM.renderToString(
-      <MuiThemeProvider>
-        <App context={context}>{route.component}</App>
-      </MuiThemeProvider>
+      <App context={context}>
+        <MuiThemeProvider muiTheme={muiTheme}>{route.component}</MuiThemeProvider>
+      </App>
     );
     data.style = [...css].join('');
     data.script = assets.main.js;

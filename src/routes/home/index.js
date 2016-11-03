@@ -16,7 +16,7 @@ export default {
   path: '/',
 
   async action() {
-    const resp = await fetch('/graphql', {
+    const resp = await fetch('http://localhost:3000/graphql', {
       method: 'post',
       headers: {
         Accept: 'application/json',
