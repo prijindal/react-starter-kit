@@ -19,6 +19,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/server';
 import UniversalRouter from 'universal-router';
 import PrettyError from 'pretty-error';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import App from './components/App';
 import Html from './components/Html';
 import { ErrorPageWithoutStyle } from './routes/error/ErrorPage';
@@ -109,7 +110,11 @@ app.get('*', async (req, res, next) => {
     }
 
     const data = { ...route };
-    data.children = ReactDOM.renderToString(<App context={context}>{route.component}</App>);
+    data.children = ReactDOM.renderToString(
+      <MuiThemeProvider>
+        <App context={context}>{route.component}</App>
+      </MuiThemeProvider>
+    );
     data.style = [...css].join('');
     data.script = assets.main.js;
     data.chunk = assets[route.chunk] && assets[route.chunk].js;

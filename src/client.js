@@ -13,6 +13,8 @@ import ReactDOM from 'react-dom';
 import FastClick from 'fastclick';
 import UniversalRouter from 'universal-router';
 import queryString from 'query-string';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { createPath } from 'history/PathUtils';
 import history from './core/history';
 import App from './components/App';
@@ -146,7 +148,9 @@ async function onLocationChange(location) {
     }
 
     appInstance = ReactDOM.render(
-      <App context={context}>{route.component}</App>,
+      <MuiThemeProvider>
+        <App context={context}>{route.component}</App>
+      </MuiThemeProvider>,
       container,
       () => onRenderComplete(route, location)
     );
@@ -171,6 +175,7 @@ async function onLocationChange(location) {
   }
 }
 
+injectTapEventPlugin();
 // Handle client-side navigation by using HTML5 History API
 // For more information visit https://github.com/mjackson/history#readme
 history.listen(onLocationChange);

@@ -8,6 +8,7 @@
  */
 
 import React, { PropTypes } from 'react';
+import RaisedButton from 'material-ui/RaisedButton';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Layout from '../../components/Layout';
 import s from './Home.css';
@@ -18,6 +19,7 @@ function Home({ news }) {
       <div className={s.root}>
         <div className={s.container}>
           <h1 className={s.title}>React.js News</h1>
+          <RaisedButton label="Default" />
           <ul className={s.news}>
             {news.map((item, index) => (
               <li key={index} className={s.newsItem}>
